@@ -36,10 +36,8 @@ namespace CompetitividadPymes.Services.Implementations
 
             loginDto.Password = string.Empty;
 
-            // 🔹 Obtener permisos del usuario desde `IdPermisos`
             var permisos = usuarioEncontrado.IdRolNavigation.IdPermisos.Select(p => p.Nombre).ToList();
 
-            // 🔹 Generar JWT con permisos incluidos
             string token = _jwtUtils.GenerarJWT(usuarioEncontrado, permisos);
 
             return new AuthResponse
