@@ -2,7 +2,7 @@
 {
     public class GeneralResponse
     {
-        public bool Result { get; set; }
+        public bool Ok { get; set; }
         public List<Object> Data { get; set; }
         public string Message { get; set; }
     }
