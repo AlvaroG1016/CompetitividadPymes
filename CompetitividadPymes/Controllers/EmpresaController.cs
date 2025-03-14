@@ -10,7 +10,7 @@ namespace CompetitividadPymes.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize]
+    [AllowAnonymous]
     public class EmpresaController : ControllerBase
     {
         private readonly IEmpresaService _empresaService;
