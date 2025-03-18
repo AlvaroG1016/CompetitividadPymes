@@ -58,8 +58,7 @@ namespace CompetitividadPymes.Services.Implementations
 
             await using var transaction = await _context.Database.BeginTransactionAsync();
 
-            try
-            {
+          
                 // 1. Validar que el nombre de la empresa no exista
                 var empresaExistente = await _context.Empresas
                     .FirstOrDefaultAsync(e => e.Nombre == empresaDto.Nombre);
@@ -98,12 +97,8 @@ namespace CompetitividadPymes.Services.Implementations
                 await transaction.CommitAsync();
 
                 return _mapper.Map<EmpresaResponseDTO>(empresa);
-            }
-            catch (Exception ex)
-            {
-                await transaction.RollbackAsync();
-                throw new Exception($"Error al crear la empresa: {ex.Message}", ex);
-            }
+            
+            
         }
 
 

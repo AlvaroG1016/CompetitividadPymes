@@ -10,12 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy(name: "AllowAll", app =>
     {
-        policy.WithOrigins("https://localhost:4200") 
-              .AllowAnyHeader()   
-              .AllowAnyMethod() 
-              .AllowCredentials();
+        app.AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
     });
 });
 
