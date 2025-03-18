@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace CompetitividadPymes.Models.Domain;
 
 public partial class PymesCompetitividadContext : DbContext
 {
-    public PymesCompetitividadContext()
+    private readonly IConfiguration _configuration;
+
+    public PymesCompetitividadContext(IConfiguration configuration)
     {
+        _configuration = configuration;
     }
 
-    public PymesCompetitividadContext(DbContextOptions<PymesCompetitividadContext> options)
-        : base(options)
+    public PymesCompetitividadContext(DbContextOptions<PymesCompetitividadContext> options, IConfiguration configuration)
+             : base(options)
     {
+        _configuration = configuration;
     }
 
     public virtual DbSet<DocumentoEvidencium> DocumentoEvidencia { get; set; }
@@ -42,8 +47,13 @@ public partial class PymesCompetitividadContext : DbContext
     public virtual DbSet<Variable> Variables { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=ALVARO;Database=PymesCompetitividad;Trusted_Connection=True;TrustServerCertificate=True;");
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            string connectionString = _configuration.GetConnectionString("CompetitividadPymes");
+            optionsBuilder.UseSqlServer(connectionString);
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
