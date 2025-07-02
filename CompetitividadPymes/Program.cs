@@ -69,6 +69,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IEmpresaService, EmpresaService>();
 builder.Services.AddTransient<IUsuarioService, UsuarioService>();
 builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddTransient<IRespuestaService, RespuestaService>();
 
 
 

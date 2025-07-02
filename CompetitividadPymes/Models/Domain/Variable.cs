@@ -15,6 +15,8 @@ public partial class Variable
 
     public string? Descripcion { get; set; }
 
+    public int? Cantidadpreguntas { get; set; }
+
     public virtual Factor IdFactorNavigation { get; set; } = null!;
 
     public virtual ICollection<Preguntum> Pregunta { get; set; } = new List<Preguntum>();

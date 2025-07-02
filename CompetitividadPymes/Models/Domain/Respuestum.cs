@@ -9,7 +9,7 @@ public partial class Respuestum
 
     public int? IdEncuesta { get; set; }
 
-    public int? IdPregunta { get; set; }
+    public string? IdPregunta { get; set; }
 
     public int ValorRespuesta { get; set; }
 

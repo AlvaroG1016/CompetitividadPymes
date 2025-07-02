@@ -1,23 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace CompetitividadPymes.Models.Domain;
 
 public partial class PymesCompetitividadContext : DbContext
 {
-    private readonly IConfiguration _configuration;
-
-    public PymesCompetitividadContext(IConfiguration configuration)
+    public PymesCompetitividadContext()
     {
-        _configuration = configuration;
     }
 
-    public PymesCompetitividadContext(DbContextOptions<PymesCompetitividadContext> options, IConfiguration configuration)
-             : base(options)
+    public PymesCompetitividadContext(DbContextOptions<PymesCompetitividadContext> options)
+        : base(options)
     {
-        _configuration = configuration;
     }
 
     public virtual DbSet<DocumentoEvidencium> DocumentoEvidencia { get; set; }
@@ -47,13 +42,8 @@ public partial class PymesCompetitividadContext : DbContext
     public virtual DbSet<Variable> Variables { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            string connectionString = _configuration.GetConnectionString("CompetitividadPymes");
-            optionsBuilder.UseSqlServer(connectionString);
-        }
-    }
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=ALVARO;Database=PymesCompetitividad;Trusted_Connection=True;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -216,9 +206,9 @@ public partial class PymesCompetitividadContext : DbContext
 
         modelBuilder.Entity<Preguntum>(entity =>
         {
-            entity.HasKey(e => e.IdPregunta).HasName("PK__Pregunta__6867FFA4A5509A21");
-
-            entity.Property(e => e.IdPregunta).HasColumnName("id_pregunta");
+            entity.Property(e => e.Id)
+                .HasMaxLength(20)
+                .IsUnicode(false);
             entity.Property(e => e.Enunciado)
                 .HasMaxLength(500)
                 .HasColumnName("enunciado");
@@ -239,7 +229,10 @@ public partial class PymesCompetitividadContext : DbContext
 
             entity.Property(e => e.IdRespuesta).HasColumnName("id_respuesta");
             entity.Property(e => e.IdEncuesta).HasColumnName("id_encuesta");
-            entity.Property(e => e.IdPregunta).HasColumnName("id_pregunta");
+            entity.Property(e => e.IdPregunta)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("id_pregunta");
             entity.Property(e => e.ValorRespuesta).HasColumnName("valor_respuesta");
 
             entity.HasOne(d => d.IdEncuestaNavigation).WithMany(p => p.Respuesta)
@@ -249,8 +242,7 @@ public partial class PymesCompetitividadContext : DbContext
 
             entity.HasOne(d => d.IdPreguntaNavigation).WithMany(p => p.Respuesta)
                 .HasForeignKey(d => d.IdPregunta)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__Respuesta__id_pr__6383C8BA");
+                .HasConstraintName("FK_Respuesta_Pregunta1");
         });
 
         modelBuilder.Entity<Rol>(entity =>
@@ -385,6 +377,7 @@ public partial class PymesCompetitividadContext : DbContext
             entity.ToTable("Variable");
 
             entity.Property(e => e.IdVariable).HasColumnName("id_variable");
+            entity.Property(e => e.Cantidadpreguntas).HasColumnName("cantidadpreguntas");
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(50)
                 .HasColumnName("descripcion");
