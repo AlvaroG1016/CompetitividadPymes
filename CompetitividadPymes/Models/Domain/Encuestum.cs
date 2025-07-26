@@ -20,4 +20,8 @@ public partial class Encuestum
     public virtual Empresa? IdEmpresaNavigation { get; set; }
 
     public virtual ICollection<Respuestum> Respuesta { get; set; } = new List<Respuestum>();
+
+    public virtual ICollection<ResultadoFactor> ResultadoFactors { get; set; } = new List<ResultadoFactor>();
+
+    public virtual ICollection<ResultadoVariable> ResultadoVariables { get; set; } = new List<ResultadoVariable>();
 }

@@ -10,12 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy(name: "AllowAll", app =>
     {
-        policy.WithOrigins("https://localhost:4200") 
-              .AllowAnyHeader()   
-              .AllowAnyMethod() 
-              .AllowCredentials();
+        app.AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
     });
 });
 
@@ -70,6 +69,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<IEmpresaService, EmpresaService>();
 builder.Services.AddTransient<IUsuarioService, UsuarioService>();
 builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddTransient<IRespuestaService, RespuestaService>();
 
 
 

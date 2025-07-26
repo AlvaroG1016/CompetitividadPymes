@@ -17,6 +17,8 @@ public partial class Factor
 
     public virtual ICollection<DocumentoEvidencium> DocumentoEvidencia { get; set; } = new List<DocumentoEvidencium>();
 
+    public virtual ICollection<ResultadoFactor> ResultadoFactors { get; set; } = new List<ResultadoFactor>();
+
     public virtual ICollection<Variable> Variables { get; set; } = new List<Variable>();
 
     public virtual ICollection<Rol> IdRols { get; set; } = new List<Rol>();
