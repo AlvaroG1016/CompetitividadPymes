@@ -33,6 +33,10 @@ public partial class PymesCompetitividadContext : DbContext
 
     public virtual DbSet<Respuestum> Respuesta { get; set; }
 
+    public virtual DbSet<ResultadoFactor> ResultadoFactors { get; set; }
+
+    public virtual DbSet<ResultadoVariable> ResultadoVariables { get; set; }
+
     public virtual DbSet<Rol> Rols { get; set; }
 
     public virtual DbSet<Suscripcion> Suscripcions { get; set; }
@@ -43,7 +47,7 @@ public partial class PymesCompetitividadContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=ALVARO;Database=PymesCompetitividad;Trusted_Connection=True;TrustServerCertificate=True");
+        => optionsBuilder.UseSqlServer("Server=ALVARO;Database=PymesCompetitividad;Trusted_Connection=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -243,6 +247,54 @@ public partial class PymesCompetitividadContext : DbContext
             entity.HasOne(d => d.IdPreguntaNavigation).WithMany(p => p.Respuesta)
                 .HasForeignKey(d => d.IdPregunta)
                 .HasConstraintName("FK_Respuesta_Pregunta1");
+        });
+
+        modelBuilder.Entity<ResultadoFactor>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Resultad__3214EC077A6D99C6");
+
+            entity.ToTable("ResultadoFactor");
+
+            entity.Property(e => e.ContribucionFinal).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.FechaCalculo).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.PesoFactor).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.PorcentajeFactor).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.PuntajeMaximo).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.PuntajeObtenido).HasColumnType("decimal(10, 2)");
+
+            entity.HasOne(d => d.IdEncuestaNavigation).WithMany(p => p.ResultadoFactors)
+                .HasForeignKey(d => d.IdEncuesta)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Resultado__IdEnc__3587F3E0");
+
+            entity.HasOne(d => d.IdFactorNavigation).WithMany(p => p.ResultadoFactors)
+                .HasForeignKey(d => d.IdFactor)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Resultado__IdFac__367C1819");
+        });
+
+        modelBuilder.Entity<ResultadoVariable>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Resultad__3214EC07B10F3B9D");
+
+            entity.ToTable("ResultadoVariable");
+
+            entity.Property(e => e.ContribucionFinal).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.FechaCalculo).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.PesoVariable).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.PorcentajeVariable).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.PuntajeMaximo).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.PuntajeObtenido).HasColumnType("decimal(10, 2)");
+
+            entity.HasOne(d => d.IdEncuestaNavigation).WithMany(p => p.ResultadoVariables)
+                .HasForeignKey(d => d.IdEncuesta)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Resultado__IdEnc__2DE6D218");
+
+            entity.HasOne(d => d.IdVariableNavigation).WithMany(p => p.ResultadoVariables)
+                .HasForeignKey(d => d.IdVariable)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Resultado__IdVar__2EDAF651");
         });
 
         modelBuilder.Entity<Rol>(entity =>

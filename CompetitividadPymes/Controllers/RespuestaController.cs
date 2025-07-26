@@ -32,9 +32,36 @@ namespace CompetitividadPymes.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ResponseBuilder.BuildErrorResponse(ex.Message));
-
             }
         }
 
+        [HttpGet]
+        public async Task<ActionResult<GeneralResponse>> ObtenerResultadosEncuesta(int Id)
+        {
+            try
+            {
+                var response = await _respuestaService.ObtenerResultadosEncuesta(Id);
+                return Ok(ResponseBuilder.BuildSuccessResponse(response, ""));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ResponseBuilder.BuildErrorResponse(ex.Message));
+            }
+        }
+
+        // NUEVO MÉTODO para obtener respuestas por factor
+        [HttpGet]
+        public async Task<ActionResult<GeneralResponse>> ObtenerRespuestasPorFactor(int encuestaId, int factorId)
+        {
+            try
+            {
+                var response = await _respuestaService.ObtenerRespuestasPorFactor(encuestaId, factorId);
+                return Ok(ResponseBuilder.BuildSuccessResponse(response, ""));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ResponseBuilder.BuildErrorResponse(ex.Message));
+            }
+        }
     }
 }
