@@ -15,6 +15,10 @@ public partial class PymesCompetitividadContext : DbContext
     {
     }
 
+    public virtual DbSet<CaracterizacionEmpresa> CaracterizacionEmpresas { get; set; }
+
+    public virtual DbSet<CaracterizacionUsuario> CaracterizacionUsuarios { get; set; }
+
     public virtual DbSet<DocumentoEvidencium> DocumentoEvidencia { get; set; }
 
     public virtual DbSet<Empresa> Empresas { get; set; }
@@ -51,6 +55,66 @@ public partial class PymesCompetitividadContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<CaracterizacionEmpresa>(entity =>
+        {
+            entity.ToTable("Caracterizacion_Empresa");
+
+            entity.HasIndex(e => e.IdEmpresa, "UQ_CaracterizacionEmpresa_IdEmpresa").IsUnique();
+
+            entity.Property(e => e.Ciudad)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.ClasificacionEmpresa).HasMaxLength(100);
+            entity.Property(e => e.Correo)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Direccion)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.IdEmpresa).HasColumnName("id_empresa");
+            entity.Property(e => e.NombreEmpresa)
+                .HasMaxLength(150)
+                .IsUnicode(false);
+            entity.Property(e => e.Telefono)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.TiempoMercado).HasMaxLength(50);
+
+            entity.HasOne(d => d.IdEmpresaNavigation).WithOne(p => p.CaracterizacionEmpresa)
+                .HasForeignKey<CaracterizacionEmpresa>(d => d.IdEmpresa)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Caracterizacion_Empresa_Empresa");
+        });
+
+        modelBuilder.Entity<CaracterizacionUsuario>(entity =>
+        {
+            entity.ToTable("Caracterizacion_Usuario");
+
+            entity.HasIndex(e => e.IdEmpresa, "UQ_CaracterizacionUsuario_IdEmpresa").IsUnique();
+
+            entity.Property(e => e.Cargo)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.EmailInstitucional)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.EmailPersonal)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.Genero)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.IdEmpresa).HasColumnName("id_empresa");
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdEmpresaNavigation).WithOne(p => p.CaracterizacionUsuario)
+                .HasForeignKey<CaracterizacionUsuario>(d => d.IdEmpresa)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Caracterizacion_Usuario_Empresa");
+        });
+
         modelBuilder.Entity<DocumentoEvidencium>(entity =>
         {
             entity.HasKey(e => e.IdDocumento).HasName("PK__Document__5D2EE7E503F5FFDF");
@@ -112,10 +176,22 @@ public partial class PymesCompetitividadContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("fecha_aplicacion");
+            entity.Property(e => e.IdCarEmpresa).HasColumnName("id_carEmpresa");
+            entity.Property(e => e.IdCarUsuario).HasColumnName("id_carUsuario");
             entity.Property(e => e.IdEmpresa).HasColumnName("id_empresa");
             entity.Property(e => e.PuntajeTotal)
                 .HasColumnType("decimal(5, 2)")
                 .HasColumnName("puntaje_total");
+
+            entity.HasOne(d => d.IdCarEmpresaNavigation).WithMany(p => p.Encuesta)
+                .HasForeignKey(d => d.IdCarEmpresa)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Encuesta_Caracterizacion_Empresa");
+
+            entity.HasOne(d => d.IdCarUsuarioNavigation).WithMany(p => p.Encuesta)
+                .HasForeignKey(d => d.IdCarUsuario)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Encuesta_Caracterizacion_Usuario");
 
             entity.HasOne(d => d.IdEmpresaNavigation).WithMany(p => p.Encuesta)
                 .HasForeignKey(d => d.IdEmpresa)

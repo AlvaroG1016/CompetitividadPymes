@@ -2,6 +2,7 @@ using CompetitividadPymes.JwtSetup;
 using CompetitividadPymes.Models.Domain;
 using CompetitividadPymes.Services.Implementations;
 using CompetitividadPymes.Services.Interfaces;
+using CompetitividadPymes.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -70,6 +71,12 @@ builder.Services.AddTransient<IEmpresaService, EmpresaService>();
 builder.Services.AddTransient<IUsuarioService, UsuarioService>();
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<IRespuestaService, RespuestaService>();
+builder.Services.AddTransient<ICaracterizacionUsuarioService, CaracterizacionUsuarioService>();
+builder.Services.AddTransient<ICaracterizacionEmpresaService, CaracterizacionEmpresaService>();
+builder.Services.AddTransient<IEncuestaService, EncuestaService>();
+builder.Services.AddTransient<ICaracterizacionVerificationService, CaracterizacionVerificationService>();
+
+
 
 
 
@@ -77,6 +84,11 @@ builder.Services.AddTransient<IRespuestaService, RespuestaService>();
 
 //Encrypt 
 builder.Services.AddSingleton<EncryptUtilities>();
+
+//Utils
+builder.Services.AddScoped<GeneralUtilities>();
+
+
 
 
 //JWT

@@ -15,7 +15,15 @@ public partial class Encuestum
 
     public decimal? PuntajeTotal { get; set; }
 
+    public int IdCarUsuario { get; set; }
+
+    public int IdCarEmpresa { get; set; }
+
     public virtual ICollection<DocumentoEvidencium> DocumentoEvidencia { get; set; } = new List<DocumentoEvidencium>();
+
+    public virtual CaracterizacionEmpresa IdCarEmpresaNavigation { get; set; } = null!;
+
+    public virtual CaracterizacionUsuario IdCarUsuarioNavigation { get; set; } = null!;
 
     public virtual Empresa? IdEmpresaNavigation { get; set; }
 

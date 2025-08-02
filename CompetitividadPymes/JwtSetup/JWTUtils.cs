@@ -31,7 +31,10 @@ namespace CompetitividadPymes.JwtSetup
         {
         new Claim(ClaimTypes.NameIdentifier, modelo.IdUsuario.ToString()),
         new Claim(ClaimTypes.Email, modelo.Correo!),
-        new Claim("Rol", modelo.IdRolNavigation.Nombre) // Agregar el rol al token
+        new Claim("Rol", modelo.IdRolNavigation.Nombre), // Agregar el rol al token
+        new Claim("IdEmpresa", modelo.IdEmpresaNavigation.IdEmpresa.ToString()),
+        
+
         };
 
             //Agregar cada permiso como un claim
