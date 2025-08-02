@@ -25,6 +25,7 @@ namespace CompetitividadPymes.Services.Implementations
         public async Task<AuthResponse> Login(LoginDTO loginDto)
         {
             var usuarioEncontrado = await _context.Usuarios
+                .Include(u => u.IdEmpresaNavigation)
                 .Include(u => u.IdRolNavigation)
                 .ThenInclude(r => r.IdPermisos) // Cargar los permisos del rol
                 .FirstOrDefaultAsync(u => u.Correo == loginDto.Correo);

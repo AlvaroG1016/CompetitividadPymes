@@ -17,6 +17,10 @@ public partial class Empresa
 
     public DateTime? FechaRegistro { get; set; }
 
+    public virtual CaracterizacionEmpresa? CaracterizacionEmpresa { get; set; }
+
+    public virtual CaracterizacionUsuario? CaracterizacionUsuario { get; set; }
+
     public virtual ICollection<Encuestum> Encuesta { get; set; } = new List<Encuestum>();
 
     public virtual ICollection<OrdenPago> OrdenPagos { get; set; } = new List<OrdenPago>();

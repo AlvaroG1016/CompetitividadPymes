@@ -12,6 +12,8 @@ namespace CompetitividadPymes.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
+
     public class RespuestaController : ControllerBase
     {
         private readonly IRespuestaService _respuestaService;

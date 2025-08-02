@@ -55,6 +55,17 @@ namespace CompetitividadPymes.Utilities
 
             return usuarioId;
         }
+        public int ObtenerIdEmpresaToken()
+        {
+            var claimValue = _httpContextAccessor.HttpContext?.User.FindFirst("IdEmpresa")?.Value;
+
+            if (string.IsNullOrEmpty(claimValue) || !int.TryParse(claimValue, out var idEmpresa))
+            {
+                throw new InvalidOperationException("No se pudo obtener un ID de empresa válido desde el token.");
+            }
+
+            return idEmpresa;
+        }
 
     }
 }
