@@ -1,4 +1,5 @@
 ﻿using CompetitividadPymes.Models.CustomResponses;
+using CompetitividadPymes.Models.Domain;
 using CompetitividadPymes.Models.DTO.Request;
 using CompetitividadPymes.Services.Interfaces;
 using CompetitividadPymes.Utilities;
@@ -28,8 +29,28 @@ namespace CompetitividadPymes.Controllers
 
             try
             {
-                await _caracterizacionUsuarioService.CreateCaracterizacionUsuario(caracterizacionUsuario);
-                return Ok(ResponseBuilder.BuildSuccessResponse( "Creado Exitosamente"));
+                var response = await _caracterizacionUsuarioService.CreateCaracterizacionUsuario(caracterizacionUsuario);
+                return Ok(ResponseBuilder.BuildSuccessResponse(response, "Creado Exitosamente"));
+            }
+            catch (InvalidOperationException ex)
+            {
+                // _logger.LogWarning(ex, "Error de validación en CrearCaracterizacionUsuario");
+                return Conflict(ResponseBuilder.BuildErrorResponse(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                // _logger.LogError(ex, "Error inesperado en CrearCaracterizacionUsuario");
+                return StatusCode(500, ResponseBuilder.BuildErrorResponse("Ocurrió un error interno"));
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<GeneralResponse>> GetIdEncuenstaByEmpresa()
+        {
+            try
+            {
+                var response = await _caracterizacionUsuarioService.GetIdEncuenstaByEmpresa();
+                return Ok(ResponseBuilder.BuildSuccessResponse(response));
             }
             catch (InvalidOperationException ex)
             {
