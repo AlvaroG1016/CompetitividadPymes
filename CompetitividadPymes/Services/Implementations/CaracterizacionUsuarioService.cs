@@ -23,7 +23,7 @@ namespace CompetitividadPymes.Services.Implementations
             _utils = utils;
         }
 
-        public async Task CreateCaracterizacionUsuario(CaracterizacionUsuarioRequestDTO req)
+        public async Task<CaracterizacionUsuarioResponseDTO> CreateCaracterizacionUsuario(CaracterizacionUsuarioRequestDTO req)
         {
             if (req == null)
             {
@@ -60,6 +60,14 @@ namespace CompetitividadPymes.Services.Implementations
                 // Un solo SaveChanges al final
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
+
+                var response = new CaracterizacionUsuarioResponseDTO
+                {
+                    Nombre = caracterizacion.Nombre,
+                    idEncuesta = encuesta.IdEncuesta
+                };
+
+                return response;
             }
             catch
             {
@@ -80,5 +88,37 @@ namespace CompetitividadPymes.Services.Implementations
             // IMPORTANTE: Usar await aquí también
             await _encuestaService.CreateEncuesta(encuestaRequest);
         }
+        public async Task<CaracterizacionUsuarioResponseDTO> GetIdEncuenstaByEmpresa()
+        {
+
+
+            try
+            {
+                int idEmpresa = _utils.ObtenerIdEmpresaToken();
+
+                var encuesta =await _context.Encuesta.FirstOrDefaultAsync(e => e.IdEmpresa == idEmpresa);
+
+
+                if (encuesta == null)
+                {
+                    throw new InvalidOperationException("NO hay encuesta asociada a esta empresa");
+                }
+
+
+
+                var response = new CaracterizacionUsuarioResponseDTO
+                {
+                    Nombre = encuesta.Estado,
+                    idEncuesta = encuesta.IdEncuesta
+                };
+
+                return response;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
     }
 }

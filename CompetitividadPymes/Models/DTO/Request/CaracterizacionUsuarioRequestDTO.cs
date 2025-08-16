@@ -16,7 +16,7 @@ namespace CompetitividadPymes.Models.DTO.Request
 
         public string EmailInstitucional { get; set; } = null!;
 
-        public string EmailPersonal { get; set; } = null!;
+        public string? EmailPersonal { get; set; } = null!;
 
     }
 }

@@ -5,6 +5,7 @@ namespace CompetitividadPymes.Services.Interfaces
 {
     public interface ICaracterizacionUsuarioService
     {
-        Task CreateCaracterizacionUsuario(CaracterizacionUsuarioRequestDTO req);
+        Task<CaracterizacionUsuarioResponseDTO> CreateCaracterizacionUsuario(CaracterizacionUsuarioRequestDTO req);
+        Task<CaracterizacionUsuarioResponseDTO> GetIdEncuenstaByEmpresa();
     }
 }
