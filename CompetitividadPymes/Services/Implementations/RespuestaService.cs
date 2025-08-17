@@ -377,5 +377,80 @@ namespace CompetitividadPymes.Services.Implementations
                 throw new Exception($"Error al obtener respuestas para el factor {factorId} en la encuesta {encuestaId}: {ex.Message}");
             }
         }
+        // Agregar este método en RespuestaService
+
+        public async Task<object> ObtenerComparativoCompetitividad(int idEncuesta)
+        {
+            try
+            {
+                // Obtener resultado de la empresa
+                var resultadoEmpresa = await CrearResultadoCompleto(idEncuesta);
+
+                // Obtener encuestas finalizadas (que tengan el factor 10 respondido)
+                var encuestasFinalizadas = await _context.ResultadoFactors
+                    .Where(rf => rf.IdFactor == 10 && rf.IdEncuesta != idEncuesta)
+                    .Select(rf => rf.IdEncuesta)
+                    .Distinct()
+                    .ToListAsync();
+
+                if (!encuestasFinalizadas.Any())
+                {
+                    return new
+                    {
+                        puntajeEmpresa = resultadoEmpresa.PuntajeFinalTotal,
+                        mediaSistema = 0,
+                        cantidadEmpresas = 0,
+                        diferencia = 0,
+                        estado = "Sin comparación",
+                        mensaje = "No hay otras empresas para comparar"
+                    };
+                }
+
+                // Calcular la media de todas las encuestas finalizadas
+                var resultadosFinalizados = await _context.ResultadoFactors
+                    .Where(rf => encuestasFinalizadas.Contains(rf.IdEncuesta))
+                    .GroupBy(rf => rf.IdEncuesta)
+                    .Select(g => g.Sum(rf => rf.ContribucionFinal))
+                    .ToListAsync();
+
+                var mediaSistema = Math.Round(resultadosFinalizados.Average(), 2);
+                var diferencia = Math.Round(resultadoEmpresa.PuntajeFinalTotal - mediaSistema, 2);
+
+                string estado;
+                string mensaje;
+
+                if (Math.Abs(diferencia) <= 2)
+                {
+                    estado = "En la media";
+                    mensaje = "Su nivel de competitividad está en línea con el promedio del mercado";
+                }
+                else if (diferencia > 2)
+                {
+                    estado = "Superior";
+                    mensaje = "¡Excelente! Su competitividad supera el promedio del mercado";
+                }
+                else
+                {
+                    estado = "Por debajo";
+                    mensaje = "Hay oportunidades de mejora en su nivel de competitividad";
+                }
+
+                return new
+                {
+                    puntajeEmpresa = resultadoEmpresa.PuntajeFinalTotal,
+                    mediaSistema = mediaSistema,
+                    cantidadEmpresas = encuestasFinalizadas.Count,
+                    diferencia = diferencia,
+                    estado = estado,
+                    mensaje = mensaje
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en ObtenerComparativoCompetitividad: {ex.Message}");
+                throw new Exception($"Error al obtener comparativo de competitividad: {ex.Message}");
+            }
+        }
+
     }
 }

@@ -8,6 +8,7 @@ namespace CompetitividadPymes.Services.Interfaces
         Task<ResultadoEncuestaDTO> ActualizarRespuestas(List<RespuestaRequestDTO> respuestas);
         Task<ResultadoEncuestaDTO> ObtenerResultadosEncuesta(int idEncuesta);
         Task<List<RespuestaPorFactorDTO>> ObtenerRespuestasPorFactor(int encuestaId, int factorId);
+        Task<object> ObtenerComparativoCompetitividad(int idEncuesta);
 
     }
 }

@@ -65,5 +65,18 @@ namespace CompetitividadPymes.Controllers
                 return BadRequest(ResponseBuilder.BuildErrorResponse(ex.Message));
             }
         }
+        [HttpGet]
+        public async Task<ActionResult<GeneralResponse>> ObtenerComparativoCompetitividad(int idEncuesta)
+        {
+            try
+            {
+                var response = await _respuestaService.ObtenerComparativoCompetitividad(idEncuesta);
+                return Ok(ResponseBuilder.BuildSuccessResponse(response, ""));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ResponseBuilder.BuildErrorResponse(ex.Message));
+            }
+        }
     }
 }
