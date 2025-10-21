@@ -58,5 +58,48 @@ namespace CompetitividadPymes.Controllers
                 return StatusCode(500, ResponseBuilder.BuildErrorResponse("Ocurrió un error interno"));
             }
         }
+
+
+        [HttpGet]
+        public async Task<ActionResult> GetAllSectores()
+        {
+
+            try
+            {
+                var response = await _caracterizacionEmpresaService.GetAllSectores();
+                return Ok(ResponseBuilder.BuildSuccessResponse(response, ""));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ResponseBuilder.BuildErrorResponse(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ResponseBuilder.BuildErrorResponse("Ocurrió un error interno"));
+            }
+        }
+
+        [HttpGet("{idSector}")]
+        public async Task<ActionResult> GetSubsectoresByIdSector(int idSector)
+        {
+            try
+            {
+                var response = await _caracterizacionEmpresaService.GetSubsectoresBySectorId(idSector);
+
+                if (response == null || !response.Any())
+                    return NotFound(ResponseBuilder.BuildErrorResponse("No se encontraron subsectores para el sector indicado."));
+
+                return Ok(ResponseBuilder.BuildSuccessResponse(response, ""));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ResponseBuilder.BuildErrorResponse(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ResponseBuilder.BuildErrorResponse("Ocurrió un error interno."));
+            }
+        }
+
     }
 }

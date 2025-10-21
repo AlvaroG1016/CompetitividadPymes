@@ -43,13 +43,21 @@ public partial class PymesCompetitividadContext : DbContext
 
     public virtual DbSet<Rol> Rols { get; set; }
 
+    public virtual DbSet<Sector> Sectors { get; set; }
+
+    public virtual DbSet<SectorSubsector> SectorSubsectors { get; set; }
+
+    public virtual DbSet<SubSector> SubSectors { get; set; }
+
     public virtual DbSet<Suscripcion> Suscripcions { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     public virtual DbSet<Variable> Variables { get; set; }
 
-    // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
+//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+//        => optionsBuilder.UseSqlServer("Server=ALVARO;Database=PymesCompetitividad;Trusted_Connection=True;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -62,7 +70,6 @@ public partial class PymesCompetitividadContext : DbContext
             entity.Property(e => e.Ciudad)
                 .HasMaxLength(100)
                 .IsUnicode(false);
-            entity.Property(e => e.ClasificacionEmpresa).HasMaxLength(100);
             entity.Property(e => e.Correo)
                 .HasMaxLength(100)
                 .IsUnicode(false);
@@ -70,6 +77,8 @@ public partial class PymesCompetitividadContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.IdEmpresa).HasColumnName("id_empresa");
+            entity.Property(e => e.IdSector).HasColumnName("id_sector");
+            entity.Property(e => e.IdSubsector).HasColumnName("id_subsector");
             entity.Property(e => e.NombreEmpresa)
                 .HasMaxLength(150)
                 .IsUnicode(false);
@@ -78,10 +87,11 @@ public partial class PymesCompetitividadContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.TiempoMercado).HasMaxLength(50);
 
-            entity.HasOne(d => d.IdEmpresaNavigation).WithOne(p => p.CaracterizacionEmpresa)
-                .HasForeignKey<CaracterizacionEmpresa>(d => d.IdEmpresa)
+            entity.HasOne(d => d.SectorSubsector).WithMany(p => p.CaracterizacionEmpresas)
+                .HasPrincipalKey(p => new { p.IdSector, p.IdSubsector })
+                .HasForeignKey(d => new { d.IdSector, d.IdSubsector })
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Caracterizacion_Empresa_Empresa");
+                .HasConstraintName("FK_Caracterizacion_SectorSubsector");
         });
 
         modelBuilder.Entity<CaracterizacionUsuario>(entity =>
@@ -418,6 +428,55 @@ public partial class PymesCompetitividadContext : DbContext
                         j.IndexerProperty<int>("IdRol").HasColumnName("id_rol");
                         j.IndexerProperty<int>("IdPermiso").HasColumnName("id_permiso");
                     });
+        });
+
+        modelBuilder.Entity<Sector>(entity =>
+        {
+            entity.HasKey(e => e.IdSector);
+
+            entity.ToTable("Sector");
+
+            entity.Property(e => e.IdSector).HasColumnName("id_sector");
+            entity.Property(e => e.NombreSector)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("nombreSector");
+        });
+
+        modelBuilder.Entity<SectorSubsector>(entity =>
+        {
+            entity.HasKey(e => e.IdSectorsubsector);
+
+            entity.ToTable("SectorSubsector");
+
+            entity.HasIndex(e => new { e.IdSector, e.IdSubsector }, "UQ_SectorSubsector").IsUnique();
+
+            entity.Property(e => e.IdSectorsubsector).HasColumnName("id_sectorsubsector");
+            entity.Property(e => e.IdSector).HasColumnName("id_sector");
+            entity.Property(e => e.IdSubsector).HasColumnName("id_subsector");
+
+            entity.HasOne(d => d.IdSectorNavigation).WithMany(p => p.SectorSubsectors)
+                .HasForeignKey(d => d.IdSector)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SectorSubsector_Sector");
+
+            entity.HasOne(d => d.IdSubsectorNavigation).WithMany(p => p.SectorSubsectors)
+                .HasForeignKey(d => d.IdSubsector)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SectorSubsector_SubSector");
+        });
+
+        modelBuilder.Entity<SubSector>(entity =>
+        {
+            entity.HasKey(e => e.IdSubsector);
+
+            entity.ToTable("SubSector");
+
+            entity.Property(e => e.IdSubsector).HasColumnName("id_subsector");
+            entity.Property(e => e.NombreSubsector)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("nombreSubsector");
         });
 
         modelBuilder.Entity<Suscripcion>(entity =>

@@ -19,11 +19,13 @@ public partial class CaracterizacionEmpresa
 
     public string TiempoMercado { get; set; } = null!;
 
-    public string ClasificacionEmpresa { get; set; } = null!;
+    public int IdSector { get; set; }
 
     public int IdEmpresa { get; set; }
 
+    public int IdSubsector { get; set; }
+
     public virtual ICollection<Encuestum> Encuesta { get; set; } = new List<Encuestum>();
 
-    public virtual Empresa IdEmpresaNavigation { get; set; } = null!;
+    public virtual SectorSubsector SectorSubsector { get; set; } = null!;
 }

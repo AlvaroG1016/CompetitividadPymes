@@ -4,6 +4,7 @@ using CompetitividadPymes.Models.DTO.Request;
 using CompetitividadPymes.Models.DTO.Response;
 using CompetitividadPymes.Services.Interfaces;
 using CompetitividadPymes.Utilities;
+using Microsoft.EntityFrameworkCore;
 
 namespace CompetitividadPymes.Services.Implementations
 {
@@ -52,5 +53,24 @@ namespace CompetitividadPymes.Services.Implementations
 
             return result;
         }
+
+        public async Task<List<SectoresResponseDTO>> GetAllSectores()
+        {
+            IQueryable<Sector> query = _context.Sectors;
+            var listSectores = await query.ToListAsync();
+            return listSectores.Select(s => _mapper.Map<SectoresResponseDTO>(s)).ToList();
+        }
+
+        public async Task<List<SubSectorResponseDTO>> GetSubsectoresBySectorId(int idSector)
+        {
+            var subsectors = await _context.SectorSubsectors
+                .Where(ss => ss.IdSector == idSector)
+                .Include(ss => ss.IdSubsectorNavigation)
+                .Select(ss => _mapper.Map<SubSectorResponseDTO>(ss.IdSubsectorNavigation))
+                .ToListAsync();
+
+            return subsectors;
+        }
+
     }
 }

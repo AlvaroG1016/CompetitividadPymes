@@ -7,5 +7,7 @@ namespace CompetitividadPymes.Services.Interfaces
     {
         Task CreateCaracterizacionEmpresa(CaracterizacionEmpresaRequestDTO req);
         Task<CaracterizacionEmpresaResponseDTO> GetCaracterizacionEmpresaByIdEmpresa();
+        Task<List<SectoresResponseDTO>> GetAllSectores();
+        Task<List<SubSectorResponseDTO>> GetSubsectoresBySectorId(int idSector);
     }
 }
