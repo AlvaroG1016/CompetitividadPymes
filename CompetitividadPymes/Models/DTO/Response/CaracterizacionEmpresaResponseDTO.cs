@@ -14,7 +14,6 @@
 
         public string TiempoMercado { get; set; } = null!;
 
-        public string ClasificacionEmpresa { get; set; } = null!;
 
         public bool Caracterizado { get; set;}
     }

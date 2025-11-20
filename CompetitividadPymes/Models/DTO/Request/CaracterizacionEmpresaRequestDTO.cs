@@ -13,8 +13,9 @@
         public string Correo { get; set; } = null!;
 
         public string TiempoMercado { get; set; } = null!;
+        public int IdSector { get; set; }
+        public int IdSubsector { get; set; }
 
-        public string ClasificacionEmpresa { get; set; } = null!;
 
     }
 }
